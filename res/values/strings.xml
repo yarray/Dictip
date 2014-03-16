@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Dictip</string>
+    <string name="action_settings">Settings</string>
+    <string name="icon">A</string>
+    <color name="light_color">#d0e0c2</color>
+    <color name="main_color">#129e91</color>
+    <color name="trans">#00000000</color>
+    <string name="button">A</string>
+    <color name="tip_back">#AA000000</color>
+
+</resources>
