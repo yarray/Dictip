@@ -8,7 +8,7 @@ The project uses [stardict reading library](https://code.google.com/p/open-ones/
 The embedded library is langdao English-Chinese dictionary under GPL license. As I know this use case could refer to the "aggregation" cases rather than the "redistribution" case, so there should be no problem.
 
 
-*Chinese Version*
+**Chinese Version**
 
 Dictip作为安卓词典，可以在复制单词的时候在屏幕上闪出中文解释。
 
