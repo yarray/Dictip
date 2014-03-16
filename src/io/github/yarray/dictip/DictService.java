@@ -44,7 +44,7 @@ public class DictService extends Service {
 		}
 		res = target + "\n" + res;
 		// Here is a special treatment for the Langdao English-Chinese Dictionary 
-		int trimPoint = res.lastIndexOf("Ïà¹Ø´Ê×é");
+		int trimPoint = res.lastIndexOf("ç›¸å…³è¯ç»„");
 		if (trimPoint > 0) {
 			return res.substring(0, trimPoint).trim();
 		} else {
