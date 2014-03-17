@@ -24,6 +24,7 @@ public class DictService extends Service {
     private Calendar _last = Calendar.getInstance();
     static private boolean _running = false;
     final private String TAG = "service";
+    private int _currentPriority = -1;
 
     OnPrimaryClipChangedListener _clipListener = new OnPrimaryClipChangedListener() {
         @Override
@@ -130,11 +131,23 @@ public class DictService extends Service {
 
         Log.i(TAG, "toggle");
         boolean on = intent.getExtras().getBoolean("ON");
-        toggleMonitoring(on);
-        Intent toggled = new Intent();
-        toggled.setAction(Constants.TOGGLED_ACTION);
-        toggled.putExtra("on", on);
-        sendBroadcast(toggled);
+
+        int priority = intent.getExtras().getInt("PRIORITY");
+
+        if (on || priority >= _currentPriority) {
+            toggleMonitoring(on);
+            Intent toggled = new Intent();
+            toggled.setAction(Constants.TOGGLED_ACTION);
+            toggled.putExtra("on", on);
+            sendBroadcast(toggled);
+
+            if (!on) {
+                _currentPriority = -1;
+            } else {
+                _currentPriority = Math.max(priority, _currentPriority);
+            }
+        }
+
         _running = true;
         return super.onStartCommand(intent, flags, startId);
     }

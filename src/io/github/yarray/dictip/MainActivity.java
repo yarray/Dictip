@@ -93,6 +93,7 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this, DictService.class);
         intent.setAction(Constants.TOGGLE_ACTION);
         intent.putExtra("ON", on);
+        intent.putExtra("PRIORITY", 1);
         startService(intent);
     }
 
