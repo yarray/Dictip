@@ -1,6 +1,5 @@
 package io.github.yarray.dictip;
 
-import io.github.yarray.dictip.R;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -78,23 +77,22 @@ public class MainActivity extends Activity {
 
 	private String copyAssets(String filename, String path) {
 		AssetManager assets = getAssets();
-		File test = new File(filename);
+		File test = new File(path, filename);
 		if (test.exists()) {
 			return test.getAbsolutePath();
 		}
-		InputStream in = null;
-		OutputStream out = null;
-		File outFile = null;
+        Log.i("main", "real copy");
+		InputStream in;
+		OutputStream out;
+		File outFile;
 		try {
 			in = assets.open(filename);
 			outFile = new File(path, filename);
 			out = new FileOutputStream(outFile);
 			copyFile(in, out);
 			in.close();
-			in = null;
 			out.flush();
 			out.close();
-			out = null;
 			return outFile.getAbsolutePath();
 		} catch (IOException e) {
 			Log.e("main", "Failed to copy asset file: " + filename, e);

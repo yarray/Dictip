@@ -14,17 +14,22 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
+
 public class DictService extends Service {
 	private StarDict _dict;
-	final private String TAG = "service";
+    private Calendar _last = Calendar.getInstance();
 
-	OnPrimaryClipChangedListener _clipListener = new OnPrimaryClipChangedListener() {
+    OnPrimaryClipChangedListener _clipListener = new OnPrimaryClipChangedListener() {
 		@Override
 		public void onPrimaryClipChanged() {
 			final ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 			CharSequence text = clipboard.getPrimaryClip().getItemAt(0)
 					.getText();
-			if (text != null) {
+            Calendar now = Calendar.getInstance();
+			if (text != null && now.getTimeInMillis() - _last.getTimeInMillis() > 1000) {
+                _last = now;
 				showTip(getTrans(text.toString()));
 			}
 		}
@@ -33,7 +38,7 @@ public class DictService extends Service {
 	private String getTrans(String word) {
 		String target = word;
 		String res = _dict.lookupWord(target);
-		if (res == "not found") {
+		if (res.equals("not found")) {
 			Stemmer stemmer = new Stemmer();
 			for (char c : word.toCharArray()) {
 				stemmer.add(c);
@@ -62,6 +67,7 @@ public class DictService extends Service {
 		final Toast toast = new Toast(getApplicationContext());
 		toast.setDuration(Toast.LENGTH_SHORT);
 		toast.setView(layout);
+        Log.i("dict", "show toast");
 		toast.show();
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
@@ -75,6 +81,7 @@ public class DictService extends Service {
 	private void toggleMonitoring(boolean on) {
 		ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 		if (on) {
+            clipboard.removePrimaryClipChangedListener(_clipListener);
 			clipboard.addPrimaryClipChangedListener(_clipListener);
 		} else {
 			clipboard.removePrimaryClipChangedListener(_clipListener);
@@ -88,11 +95,12 @@ public class DictService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.i(TAG, "intent come in");
-		if (intent.getAction() == Constants.INIT_ACTION) {
+        String TAG = "service";
+        Log.i(TAG, "intent come in");
+		if (intent.getAction() != null && intent.getAction().equals(Constants.INIT_ACTION)) {
 			Log.i(TAG, "init");
 			_dict = new StarDict(intent.getExtras().getString("DICT_PATH"));
-		} else if (intent.getAction() == Constants.TOGGLE_ACTION) {
+		} else if (intent.getAction().equals(Constants.TOGGLE_ACTION) && _dict != null) {
 			Log.i(TAG, "toggle");
 			boolean on = intent.getExtras().getBoolean("ON");
 			toggleMonitoring(on);
