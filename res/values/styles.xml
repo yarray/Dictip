@@ -2,7 +2,10 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+
+
+
     -->
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
         <!--
@@ -19,7 +22,8 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:actionBarStyle">@style/myActionBar</item>
-<!--         <item name="android:toastFrameBackground">@drawable/toastback</item> -->
+        <item name="android:popupMenuStyle">@style/myPopupMenu</item>
+        <!--         <item name="android:toastFrameBackground">@drawable/toastback</item> -->
     </style>
 
     <style name="myActionBar" parent="android:Widget.Holo.Light.ActionBar">
@@ -27,11 +31,17 @@
         <item name="android:titleTextStyle">@style/myTitle</item>
     </style>
 
+    <style name="myPopupMenu" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menuback</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
     <style name="myTitle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">#ffffff</item>
         <item name="android:fontFamily">sans-serif-thin</item>
         <item name="android:textSize">25sp</item>
-        <item name="android:paddingLeft">10sp</item> <!-- not work -->
+        <item name="android:paddingLeft">10sp</item>
+        <!-- not work -->
     </style>
 
 </resources>

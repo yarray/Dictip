@@ -8,6 +8,8 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -27,7 +29,7 @@
             android:name="io.github.yarray.dictip.DictService"
             android:exported="false"
             android:process=":background"
-            ></service>
+            />
         <receiver
             android:name="io.github.yarray.dictip.ToggleReceiver"
             android:exported="true"
@@ -35,6 +37,13 @@
             <intent-filter>
                 <action android:name="io.github.yarray.dictip.TOGGLE" >
                 </action>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="io.github.yarray.dictip.BootReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>
