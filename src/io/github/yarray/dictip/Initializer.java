@@ -10,11 +10,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 class Initializer {
     Context _context;
     private final String _dir;
+    private Pattern _dzPattern = Pattern.compile("(.*\\.dict\\.?)\\.dz$");
 
     public Initializer(Context context) {
         _context = context;
@@ -31,8 +34,27 @@ class Initializer {
         copyAssets(dictName + ".ifo", _dir);
         copyAssets(dictName + ".idx", _dir);
 
+        initDzDictionaries();
+
         getPref().edit().putString("DICT_PATH",
                 getPref().getString("DICT_PATH", getDictPath(dictName))).commit();
+    }
+
+    public void initDzDictionaries() {
+        File[] files = new File(_dir).listFiles();
+        if (files == null) {
+            return;
+        }
+        for (File f: files) {
+            Matcher match = _dzPattern.matcher(f.getAbsolutePath());
+            if (match.find() && !new File(match.group(1)).exists()) {
+                try {
+                    Utils.decompressGzip(f.getAbsolutePath(), match.group(1));
+                } catch (IOException e) {
+                    Log.e("init", "decompress dict.dz error", e);
+                }
+            }
+        }
     }
 
     public void init(String dictName) {
