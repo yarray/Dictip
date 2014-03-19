@@ -22,9 +22,10 @@ import java.util.Calendar;
 public class DictService extends Service {
     private StarDict _dict;
     private Calendar _last = Calendar.getInstance();
-    static private boolean _running = false;
     final private String TAG = "service";
-    private int _currentPriority = -1;
+
+    private StarDict _globalDict;
+    private boolean _globalOn = false;
 
     OnPrimaryClipChangedListener _clipListener = new OnPrimaryClipChangedListener() {
         @Override
@@ -119,42 +120,34 @@ public class DictService extends Service {
         }
 
         Log.i(TAG, "intent come in");
-        if (!_running) {
+
+        String dictPath = intent.getExtras().getString("DICT_PATH");
+        if (dictPath != null) {
+            _dict = new StarDict(dictPath);
+        }
+        else if (_dict == null) {
             Log.i(TAG, "init");
-            if (_dict == null) {
-                String dictPath = intent.getExtras().getString("DICT_PATH");
-                _dict = new StarDict(dictPath == null
-                        ? getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE).getString("DICT_PATH", "")
-                        : dictPath);
-            }
+            _dict = new StarDict(getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE).getString("DICT_PATH", ""));
         }
 
         Log.i(TAG, "toggle");
+
+
+        boolean global = intent.getExtras().getBoolean("GLOBAL");
         boolean on = intent.getExtras().getBoolean("ON");
 
-        int priority = intent.getExtras().getInt("PRIORITY");
-
-        if (on || priority >= _currentPriority) {
-            toggleMonitoring(on);
-            Intent toggled = new Intent();
-            toggled.setAction(Constants.TOGGLED_ACTION);
-            toggled.putExtra("on", on);
-            sendBroadcast(toggled);
-
-            if (!on) {
-                _currentPriority = -1;
-            } else {
-                _currentPriority = Math.max(priority, _currentPriority);
-            }
+        if (global) {
+            _globalDict = _dict;
+            _globalOn = on;
         }
 
-        _running = true;
-        return super.onStartCommand(intent, flags, startId);
-    }
+        toggleMonitoring(on);
 
-    @Override
-    public void onDestroy() {
-        _running = false;
-        super.onDestroy();
+        if (!global && !on) {
+            _dict = _globalDict;
+            toggleMonitoring(_globalOn);
+        }
+
+        return super.onStartCommand(intent, flags, startId);
     }
 }

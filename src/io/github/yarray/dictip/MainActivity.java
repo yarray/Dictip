@@ -1,11 +1,8 @@
 package io.github.yarray.dictip;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,34 +13,12 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private boolean _on;
-    private BroadcastReceiver _toggledReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context ctx, Intent intent) {
-            Bundle extras = intent.getExtras();
-            if (extras != null) {
-                updateToggle(findViewById(R.id.toogler), extras.getBoolean("on"));
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new Initializer(this).init();
-        registerReceiver(_toggledReceiver, new IntentFilter(Constants.TOGGLED_ACTION));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(_toggledReceiver);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(_toggledReceiver, new IntentFilter(Constants.TOGGLED_ACTION));
     }
 
     @Override
@@ -93,7 +68,7 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this, DictService.class);
         intent.setAction(Constants.TOGGLE_ACTION);
         intent.putExtra("ON", on);
-        intent.putExtra("PRIORITY", 1);
+        intent.putExtra("GLOBAL", true);
         startService(intent);
     }
 
