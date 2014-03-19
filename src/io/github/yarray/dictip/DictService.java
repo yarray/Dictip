@@ -27,6 +27,8 @@ public class DictService extends Service {
     private StarDict _globalDict;
     private boolean _globalOn = false;
 
+    private Preferences _pref = new Preferences(this);
+
     OnPrimaryClipChangedListener _clipListener = new OnPrimaryClipChangedListener() {
         @Override
         public void onPrimaryClipChanged() {
@@ -121,17 +123,16 @@ public class DictService extends Service {
 
         Log.i(TAG, "intent come in");
 
-        String dictPath = intent.getExtras().getString("DICT_PATH");
-        if (dictPath != null) {
-            _dict = new StarDict(dictPath);
+        String dictName = intent.getExtras().getString("DICT_NAME");
+        if (dictName != null) {
+            _dict = new StarDict(_pref.getDictPath(dictName));
         }
         else if (_dict == null) {
             Log.i(TAG, "init");
-            _dict = new StarDict(getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE).getString("DICT_PATH", ""));
+            _dict = new StarDict(_pref.getSelectedDictPath());
         }
 
         Log.i(TAG, "toggle");
-
 
         boolean global = intent.getExtras().getBoolean("GLOBAL");
         boolean on = intent.getExtras().getBoolean("ON");
@@ -139,6 +140,7 @@ public class DictService extends Service {
         if (global) {
             _globalDict = _dict;
             _globalOn = on;
+            _pref.selectDict(dictName);
         }
 
         toggleMonitoring(on);

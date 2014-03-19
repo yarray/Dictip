@@ -1,7 +1,9 @@
 package io.github.yarray.dictip;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -13,12 +15,13 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private boolean _on;
+    private String[] _dictList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new Initializer(this).init();
+        _dictList = new Initializer(this).init();
     }
 
     @Override
@@ -36,7 +39,6 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
         PackageManager packageManager = getPackageManager();
         assert packageManager != null;
         MenuItem startOnBootCheckbox = menu.findItem(R.id.start_on_boot);
@@ -61,20 +63,34 @@ public class MainActivity extends Activity {
                 Toast.makeText(this, item.isChecked() ? "start on boot" : "not start on boot",
                         Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.select_dict:
+                AlertDialog.Builder availableDictList = new AlertDialog.Builder(this);
+                availableDictList.setTitle("Select a dictionary");
+                availableDictList.setItems(_dictList, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendToggle(_on, _dictList[which]);
+                    }
+                });
+                availableDictList.show();
+                return true;
             default:
                 return super.onContextItemSelected(item);
         }
     }
 
     public void toggle(View btn) {
-        sendToggle(updateToggle(btn, !_on));
+        sendToggle(updateToggle(btn, !_on), null);
     }
 
-    public void sendToggle(boolean on) {
+    public void sendToggle(boolean on, String dictName) {
         Intent intent = new Intent(this, DictService.class);
         intent.setAction(Constants.TOGGLE_ACTION);
         intent.putExtra("ON", on);
         intent.putExtra("GLOBAL", true);
+        if (dictName != null) {
+            intent.putExtra("DICT_NAME", dictName);
+        }
         startService(intent);
     }
 

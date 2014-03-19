@@ -1,7 +1,6 @@
 package io.github.yarray.dictip;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.util.Log;
 
@@ -10,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 class Initializer {
     Context _context;
     private final String _dir;
+    private Preferences _pref;
+    private Pattern _dictPattern = Pattern.compile("(.*?)\\.dict$");
     private Pattern _dzPattern = Pattern.compile("(.*\\.dict\\.?)\\.dz$");
 
     public Initializer(Context context) {
@@ -24,26 +26,25 @@ class Initializer {
         File filesDir = _context.getExternalFilesDir(null);
         assert filesDir != null;
         _dir = filesDir.getAbsolutePath();
+        _pref = new Preferences(_context);
+        _pref.setDictHome(_dir);
         Log.i("init", _dir);
     }
 
-    public void init() {
+    public String[] init() {
         // init the default dictionary
-        String dictName = "dict";
+        String dictName = _pref.getDefaultDictName();
         copyAssets(dictName + ".dict", _dir);
         copyAssets(dictName + ".ifo", _dir);
         copyAssets(dictName + ".idx", _dir);
 
-        initDzDictionaries();
-
-        getPref().edit().putString("DICT_PATH",
-                getPref().getString("DICT_PATH", getDictPath(dictName))).commit();
+        return initUserDictionaries();
     }
 
-    public void initDzDictionaries() {
+    public String[] initUserDictionaries() {
         File[] files = new File(_dir).listFiles();
         if (files == null) {
-            return;
+            return new String[] {};
         }
         for (File f: files) {
             Matcher match = _dzPattern.matcher(f.getAbsolutePath());
@@ -55,18 +56,16 @@ class Initializer {
                 }
             }
         }
-    }
 
-    public void init(String dictName) {
-        getPref().edit().putString("DICT_PATH", getDictPath(dictName)).commit();
-    }
+        ArrayList<String> dictList = new ArrayList<String>();
+        for (File f: files) {
+            Matcher match = _dictPattern.matcher(f.getAbsolutePath());
 
-    private String getDictPath(String dictName) {
-        return _dir + "/" + dictName + ".dict";
-    }
-
-    private SharedPreferences getPref() {
-        return _context.getSharedPreferences(_context.getString(R.string.pref_file), Context.MODE_PRIVATE);
+            if (match.find()) {
+                dictList.add(new File(match.group(1)).getName());
+            }
+        }
+        return dictList.toArray(new String[dictList.size()]);
     }
 
     private String copyAssets(String filename, String path) {

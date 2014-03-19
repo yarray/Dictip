@@ -7,5 +7,10 @@
         android:title="@string/start_on_boot"
         android:checkable="true"
         android:checked="false"/>
+    <item
+        android:id="@+id/select_dict"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/select_dictionary"/>
 
 </menu>
