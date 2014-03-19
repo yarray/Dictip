@@ -18,9 +18,10 @@ class Initializer {
 
     public Initializer(Context context) {
         _context = context;
-        File filesDir = _context.getFilesDir();
+        File filesDir = _context.getExternalFilesDir(null);
         assert filesDir != null;
         _dir = filesDir.getAbsolutePath();
+        Log.i("init", _dir);
     }
 
     public void init() {
