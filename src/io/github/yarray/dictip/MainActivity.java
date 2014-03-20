@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 //import android.widget.Toast;
 
@@ -22,6 +23,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         _dictList = new Initializer(this).init();
+        Preferences pref = new Preferences(this);
+        setCurrentDict(pref.getDictDisplayName(pref.getDefaultDictName()));
     }
 
     @Override
@@ -66,21 +69,19 @@ public class MainActivity extends Activity {
             case R.id.select_dict:
                 AlertDialog.Builder availableDictList = new AlertDialog.Builder(this);
                 final Preferences pref = new Preferences(this);
-                String[] displayDictList = new String[_dictList.length];
+                final String[] displayDictList = new String[_dictList.length];
                 for (int i = 0; i < _dictList.length; i++) {
-                    displayDictList[i] = _dictList[i];
-                    if (_dictList[i].equals(pref.getDefaultDictName())) {
-                        displayDictList[i] += "(default)";
-                    }
-                    if (_dictList[i].equals(pref.getSelectedDictName())) {
-                        displayDictList[i] += "(current)";
-                    }
+                    displayDictList[i] = pref.getDictDisplayName(_dictList[i]);
+//                    if (_dictList[i].equals(pref.getDefaultDictName())) {
+//                        displayDictList[i] += " (default)";
+//                    }
                 }
                 availableDictList.setItems(displayDictList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sendToggle(_on, _dictList[which]);
                         pref.selectDict(_dictList[which]);
+                        setCurrentDict(displayDictList[which]);
                     }
                 });
                 availableDictList.show();
@@ -117,5 +118,13 @@ public class MainActivity extends Activity {
 //		Toast.makeText(getApplicationContext(), "Dictip " + (on ? "on" : "off"),
 //				Toast.LENGTH_SHORT).show();
         return on;
+    }
+
+    private void setCurrentDict(String name) {
+        TextView nameCtrl = ((TextView)findViewById(R.id.selected_dict));
+        nameCtrl.setText(name);
+        if (nameCtrl.getParent() != null) {
+            ((View)nameCtrl.getParent()).invalidate();
+        }
     }
 }

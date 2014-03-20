@@ -22,4 +22,19 @@
         android:textColor="#ffffff"
         android:background="@drawable/roundedbutton"
         android:onClick="toggle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="sample texttttt"
+        android:id="@+id/selected_dict"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="38dp"
+        android:autoText="false"
+        android:textColor="@color/main_color"
+        android:alpha="0.5"
+        android:textSize="16sp" />
+
 </RelativeLayout>

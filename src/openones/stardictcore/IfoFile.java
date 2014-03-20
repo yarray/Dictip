@@ -19,20 +19,19 @@
 
 package openones.stardictcore;
 
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 
-import android.util.Log;
-
 /**
  * This class is used for reading .ifo file.
  * @author kien
  */
 public class IfoFile {
-    /** Logger. */
     /** constant of 500. */
     private final int fixHundred = 500;
 

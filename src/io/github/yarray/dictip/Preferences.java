@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 
+import openones.stardictcore.IfoFile;
+
 class Preferences {
     Context _context;
 
@@ -45,5 +47,9 @@ class Preferences {
 
     public void selectDict(String dictName) {
         setString("DICT_NAME", dictName);
+    }
+
+    public String getDictDisplayName(String dictName) {
+        return new IfoFile(getDictHome() + "/" + dictName + ".ifo").getStrBookname().replace("\r", "").trim();
     }
 }
