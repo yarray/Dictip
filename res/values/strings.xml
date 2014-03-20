@@ -6,6 +6,8 @@
     <string name="icon">A</string>
     <color name="light_color">#d0e0c2</color>
     <color name="main_color">#129e91</color>
+    <color name="grey_color">#dedede</color>
+    <color name="border_color">#666666</color>
     <color name="trans">#00000000</color>
     <string name="button">A</string>
     <string name="start_on_boot">start on boot</string>

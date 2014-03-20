@@ -23,6 +23,8 @@
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:actionBarStyle">@style/myActionBar</item>
         <item name="android:popupMenuStyle">@style/myPopupMenu</item>
+        <item name="android:checkboxStyle">@style/myCheckBox</item>
+        <!--<item name="android:checkboxStyle">@android:style/Widget.Holo.CompoundButton.CheckBox</item>-->
         <!--         <item name="android:toastFrameBackground">@drawable/toastback</item> -->
     </style>
 
@@ -42,6 +44,10 @@
         <item name="android:textSize">25sp</item>
         <item name="android:paddingLeft">10sp</item>
         <!-- not work -->
+    </style>
+
+    <style name="myCheckBox">
+        <item name="android:button">@drawable/checkbox_selector</item>
     </style>
 
 </resources>

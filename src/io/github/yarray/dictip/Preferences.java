@@ -12,7 +12,7 @@ class Preferences {
     }
 
     private SharedPreferences getPref() {
-        return _context.getSharedPreferences(_context.getString(R.string.pref_file), Context.MODE_PRIVATE);
+        return _context.getSharedPreferences(_context.getString(R.string.pref_file), Context.MODE_MULTI_PROCESS);
     }
 
     private void setString(String key, String value) {
@@ -36,7 +36,11 @@ class Preferences {
     }
 
     public String getSelectedDictPath() {
-        return getDictPath(getPref().getString("DICT_NAME", getDefaultDictName()));
+        return getDictPath(getSelectedDictName());
+    }
+
+    public String getSelectedDictName() {
+        return getPref().getString("DICT_NAME", getDefaultDictName());
     }
 
     public void selectDict(String dictName) {

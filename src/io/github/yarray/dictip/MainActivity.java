@@ -65,11 +65,22 @@ public class MainActivity extends Activity {
                 return true;
             case R.id.select_dict:
                 AlertDialog.Builder availableDictList = new AlertDialog.Builder(this);
-                availableDictList.setTitle("Select a dictionary");
-                availableDictList.setItems(_dictList, new DialogInterface.OnClickListener() {
+                final Preferences pref = new Preferences(this);
+                String[] displayDictList = new String[_dictList.length];
+                for (int i = 0; i < _dictList.length; i++) {
+                    displayDictList[i] = _dictList[i];
+                    if (_dictList[i].equals(pref.getDefaultDictName())) {
+                        displayDictList[i] += "(default)";
+                    }
+                    if (_dictList[i].equals(pref.getSelectedDictName())) {
+                        displayDictList[i] += "(current)";
+                    }
+                }
+                availableDictList.setItems(displayDictList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sendToggle(_on, _dictList[which]);
+                        pref.selectDict(_dictList[which]);
                     }
                 });
                 availableDictList.show();
