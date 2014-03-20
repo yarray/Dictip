@@ -1,7 +1,5 @@
 package io.github.yarray.dictip;
 
-import openones.stardictcore.StarDict;
-
 import android.app.Service;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -16,7 +14,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jactiveresource.Inflector;
+
 import java.util.Calendar;
+
+import openones.stardictcore.StarDict;
 
 
 public class DictService extends Service {
@@ -53,6 +55,11 @@ public class DictService extends Service {
     private String getTrans(String word) {
         String target = word;
         String res = _dict.lookupWord(target);
+
+        if (res.equals("not found")) {
+            target= Inflector.singularize(word);
+            res = _dict.lookupWord(target);
+        }
         if (res.equals("not found")) {
             Stemmer stemmer = new Stemmer();
             for (char c : word.toCharArray()) {
@@ -62,7 +69,7 @@ public class DictService extends Service {
             target = stemmer.toString();
             res = _dict.lookupWord(target);
         }
-        res = target + "\n" + res;
+        res = target.toLowerCase() + "\n" + res;
         // Here is a special treatment for the Langdao English-Chinese Dictionary
         int trimPoint = res.lastIndexOf("相关词组");
         if (trimPoint > 0) {
