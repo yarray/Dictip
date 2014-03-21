@@ -26,7 +26,7 @@ I exposed a broadcast receiver to enable other apps (Tasker, for example) sendin
 * Action: io.github.yarray.dictip.TOGGLE
 * Extras:
   * ON: boolean
-  * DICT\_NAME: String (optional)
+  * DICT\_NAME: String (optional, fill in the dict file name without file extension)
 
 Note that the intent will take effect "on-the-fly", that is, the status will not be persisted and will fallback to the settings made in the main window.
 
@@ -58,6 +58,6 @@ Dictip 是安卓下的词典软件，可以在复制单词的时候在屏幕上�
 * Action: io.github.yarray.dictip.TOGGLE
 * Extras:
   * ON: boolean
-  * DICT\_NAME: String (optional)
+  * DICT\_NAME: String (可选，填入词典的不带后缀的文件名） 
 
 注意此intent只是临时改变状态，即其设置不会持久化，当其关闭翻译，服务状态会退回在主界面全局设置的情况。
